@@ -1,0 +1,72 @@
+        set     pc, tr_0
+
+str:    dat     0x9000
+tok:    dat     0xA000
+        
+tr_0:
+        ifl     [a], 0x5B ; 'Z' + 1
+          ifg   [a], 0x40 ; 'A' - 1
+            set pc, tr_0_alpha
+        ifl     [a], 0x7B ; 'z' + 1
+          ifg   [a], 0x60 ; 'a' - 1
+            set pc, tr_0_alpha
+            
+        ifl     [a], 0x2F ; '9' + 1
+          ifg   [a], 0x3A ; '0' - 1
+            set pc, tr_0_digit
+            
+        ife     [a], 0x3A ; colon
+          set   pc, tr_0_colon
+          
+        ife     [a], 0x2C ; comma
+          set   pc, tr_0_comma
+          
+        set     pc, tr_0_other
+tr_0_alpha:
+        add     a, 1
+        set     pc, tr_1
+tr_0_digit:
+        add     a, 1
+        set     pc, tr_2
+tr_0_colon:
+        add     a, 1
+        set     pc, tr_0
+tr_0_comma:
+        add     a, 1
+        set     pc, tr_0
+tr_0_other:
+        add     a, 1
+        set     pc, tr_0
+        
+tr_1:
+        ifl     [a], 0x5B ; 'Z' + 1
+          ifg   [a], 0x40 ; 'A' - 1
+            set pc, tr_1_alnum
+        ifl     [a], 0x7B ; 'z' + 1
+          ifg   [a], 0x60 ; 'a' - 1
+            set pc, tr_1_alnum
+        ifl     [a], 0x2F ; '9' + 1
+          ifg   [a], 0x3A ; '0' - 1
+            set pc, tr_1_alnum
+            
+        set     pc, tr_1_other
+tr_1_alnum:
+        add     a, 1
+        set     pc, tr_1
+tr_1_other:
+        set     pc, tr_0
+        
+tr_2:
+        ifl     [a], 0x2F ; '9' + 1
+          ifg   [a], 0x3A ; '0' - 1
+            set pc, tr_2_digit
+            
+        ; ife    [a], 'h'
+        ;   treat as hex, etc.
+        
+        set     pc, tr_2_other
+tr_2_digit:
+        add     a, 1
+        set     pc, tr_2
+tr_2_other:
+        set     pc, tr_0
