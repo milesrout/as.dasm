@@ -254,7 +254,7 @@ state_7:
 	        SET PC, lex_tr_7_to_7
 	
 	;; otherwise do a non-consuming production transition back to zero
-	SET PC, lex_tr_6_to_0	
+	SET PC, lex_tr_7_to_0	
 state_8:
 	JSR lookahead
 	IFE A, 0x30		; '0'
